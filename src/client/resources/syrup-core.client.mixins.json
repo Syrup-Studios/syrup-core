@@ -3,7 +3,7 @@
 	"package": "net.syrupstudios.syrupcore.client.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		"InGameHudMixin"
+		"InGameHudArmorMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

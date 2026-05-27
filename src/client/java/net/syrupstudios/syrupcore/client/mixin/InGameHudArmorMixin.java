@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Arrays;
 
 @Mixin(Gui.class)
-public class InGameHudMixin {
+public class InGameHudArmorMixin {
 
     @Unique
     private static final ResourceLocation VANILLA_GUI_ICONS = new ResourceLocation("textures/gui/icons.png");
