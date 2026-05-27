@@ -3,7 +3,7 @@
 	"id": "syrup-core",
 	"version": "${version}",
 	"name": "Syrup Core",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "This is the Syrup Studio Core mod that adds a bunch of features in one package",
 	"authors": [],
 	"contact": {},
 	"license": "ARR",
@@ -17,7 +17,9 @@
 			"net.syrupstudios.syrupcore.client.SyrupCoreClient"
 		]
 	},
-	"mixins": [],
+	"mixins": [
+		"syrup-core.client.mixins.json"
+	],
 	"depends": {
 		"fabricloader": ">=0.19.2",
 		"minecraft": "~1.20.1",
