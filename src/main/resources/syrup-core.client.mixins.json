@@ -1,0 +1,23 @@
+{
+	"required": true,
+	"package": "net.syrupstudios.syrupcore.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"AbstractSelectionListMixin",
+		"WorldSelectionListMixin",
+		"SelectWorldScreenMixin",
+		"WorldListEntryMixin",
+		"ServerDataMixin",
+		"ServerListAccessor",
+		"ServerSelectionListMixin",
+		"OnlineServerEntryMixin",
+		"OnlineServerEntryAccessor",
+		"JoinMultiplayerScreenMixin",
+		"JoinMultiplayerScreenAccessor",
+		"MinecraftServerPlayTimeMixin",
+		"ClientPacketListenerServerPlayTimeMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

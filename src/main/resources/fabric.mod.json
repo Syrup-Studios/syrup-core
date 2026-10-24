@@ -1,29 +1,28 @@
 {
 	"schemaVersion": 1,
-	"id": "syrup-core",
+	"id": "${modId}",
 	"version": "${version}",
-	"name": "Syrup Core",
-	"description": "This is the Syrup Studio Core mod that adds a bunch of features in one package",
-	"authors": [],
-	"contact": {},
-	"license": "ARR",
+	"name": "${modName}",
+	"description": "${description}",
+	"authors": ["Syrup Studios"],
+	"contact": {
+		"homepage": "${homepage}",
+		"issues": "${issues}",
+		"sources": "${sources}"
+	},
+	"license": "${license}",
 	"icon": "assets/syrup-core/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"net.syrupstudios.syrupcore.SyrupCore"
-		],
-		"client": [
-			"net.syrupstudios.syrupcore.client.SyrupCoreClient"
+			"net.syrupstudios.syrupcore.loaders.fabric.FabricEntrypoint"
 		]
 	},
-	"mixins": [
-		"syrup-core.client.mixins.json"
-	],
+	"mixins": ["syrup-core.client.mixins.json"],
 	"depends": {
-		"fabricloader": ">=0.19.2",
-		"minecraft": "~1.20.1",
-		"java": ">=17",
-		"fabric-api": "*"
+		"fabricloader": ">=${fabricLoader}",
+		"minecraft": "${minecraftRange}",
+		"java": ">=${javaVersion}",
+		"fabric-api": ">=${fabricApi}"
 	}
 }

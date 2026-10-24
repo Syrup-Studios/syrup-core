@@ -1,0 +1,32 @@
+mod:
+  id: syrup_core
+  name: Syrup Core
+  group: net.syrupstudios.syrupcore
+  version: 0.0.1
+  description: Core features for Syrup Studios mods.
+  authors: [Syrup Studios]
+  license: ARR
+  homepage: https://github.com/Syrup-Studios/syrup-core
+  issues: https://github.com/Syrup-Studios/syrup-core/issues
+  sources: https://github.com/Syrup-Studios/syrup-core
+
+loomx.loom_version: "1.17.21"
+
+targets:
+  - minecraft: 1.21.1
+    loaders: [fabric, neoforge]
+
+"1.21.1":
+  java:
+    version: 21
+  mod:
+    fabric_mc_range: "~1.21.1"
+    neoforge_mc_range: "[1.21.1]"
+  fabric:
+    deps:
+      fabric_loader: 0.19.2
+      fabric_api: 0.116.12+1.21.1
+    environment: "*"
+  neoforge:
+    deps:
+      neoforge: 21.1.209
