@@ -10,6 +10,11 @@ mod:
   issues: https://github.com/Syrup-Studios/syrup-core/issues
   sources: https://github.com/Syrup-Studios/syrup-core
 
+publish:
+  modrinth: "PXmOpujD"
+  curseforge: "1762415"
+publish.release_type: beta
+
 loomx.loom_version: "1.17.21"
 
 targets:
@@ -23,6 +28,8 @@ targets:
     fabric_mc_range: "~1.21.1"
     neoforge_mc_range: "[1.21.1]"
   fabric:
+    publish.modrinth_requires: [fabric-api]
+    publish.curseforge_requires: [fabric-api]
     deps:
       fabric_loader: 0.19.2
       fabric_api: 0.116.12+1.21.1
