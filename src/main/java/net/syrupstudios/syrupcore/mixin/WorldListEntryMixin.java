@@ -27,8 +27,13 @@ public abstract class WorldListEntryMixin implements WorldListEntryAccess {
     @Unique private int syrupCore$rowY;
 
     @Shadow @Final private LevelSummary summary;
-    @Shadow @Final private WorldSelectionList field_19135;
     @Shadow @Final private Minecraft minecraft;
+    @Unique private WorldSelectionList syrupCore$list;
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void syrupCore$storeList(WorldSelectionList outer, WorldSelectionList parent, LevelSummary summary, CallbackInfo ci) {
+        syrupCore$list = parent;
+    }
 
     @Override
     public String syrupCore$getWorldId() { return summary.getLevelId(); }
@@ -57,7 +62,7 @@ public abstract class WorldListEntryMixin implements WorldListEntryAccess {
         if (mouseX >= syrupCore$rowX - 16 && mouseX < syrupCore$rowX - 4) {
             if (button == 0 && mouseY >= syrupCore$rowY + 10 && mouseY < syrupCore$rowY + 22) {
                 WorldFavorites.toggle(summary.getLevelId());
-                ((WorldSelectionListAccess)field_19135).syrupCore$refreshFavorites();
+                ((WorldSelectionListAccess)syrupCore$list).syrupCore$refreshFavorites();
                 cir.setReturnValue(true);
             } else {
                 cir.setReturnValue(false);

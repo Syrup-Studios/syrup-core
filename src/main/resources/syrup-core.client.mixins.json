@@ -9,6 +9,7 @@
 		"WorldListEntryMixin",
 		"ServerDataMixin",
 		"ServerListAccessor",
+		"ServerListMixin",
 		"ServerSelectionListMixin",
 		"OnlineServerEntryMixin",
 		"OnlineServerEntryAccessor",

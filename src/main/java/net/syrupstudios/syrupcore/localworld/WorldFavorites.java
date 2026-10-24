@@ -9,12 +9,18 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
+import net.syrupstudios.syrupcore.client.LegacyFavoriteImporter;
 import net.syrupstudios.syrupcore.SyrupCore;
 
 public final class WorldFavorites {
     private static final Path FILE = Minecraft.getInstance().gameDirectory.toPath().resolve("config/syrup-core-favorites.txt");
     private static boolean loadSucceeded;
     private static final Set<String> FAVORITES = load();
+    private static final Path MIGRATION_MARKER = FILE.resolveSibling("syrup-core-favorites-migrated");
+
+    static {
+        importLegacyFavorites();
+    }
 
     private WorldFavorites() {}
 
@@ -62,6 +68,20 @@ public final class WorldFavorites {
         } catch (IOException exception) {
             SyrupCore.LOGGER.error("Could not save world favorites", exception);
             return false;
+        }
+    }
+
+    private static void importLegacyFavorites() {
+        if (!loadSucceeded || Files.exists(MIGRATION_MARKER)) return;
+        Set<String> legacyFavorites = LegacyFavoriteImporter.getLegacyFavorites().orElse(null);
+        if (legacyFavorites == null) return;
+        try {
+            FAVORITES.addAll(legacyFavorites);
+            if (!save()) return;
+            Files.createDirectories(MIGRATION_MARKER.getParent());
+            Files.createFile(MIGRATION_MARKER);
+        } catch (Exception exception) {
+            SyrupCore.LOGGER.error("Could not import Cherished Worlds favorites", exception);
         }
     }
 }

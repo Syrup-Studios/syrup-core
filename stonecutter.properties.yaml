@@ -2,7 +2,7 @@ mod:
   id: syrup_core
   name: Syrup Core
   group: net.syrupstudios.syrupcore
-  version: 0.0.1
+  version: 0.0.2
   description: Core features for Syrup Studios mods.
   authors: [Syrup Studios]
   license: ARR

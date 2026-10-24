@@ -1,6 +1,7 @@
 package net.syrupstudios.syrupcore.mixin;
 
 import net.syrupstudios.syrupcore.client.FavoriteServerData;
+import net.syrupstudios.syrupcore.client.LegacyFavoriteImporter;
 
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.nbt.CompoundTag;
@@ -22,7 +23,7 @@ public abstract class ServerDataMixin implements FavoriteServerData {
 
     @Inject(method = "read", at = @At("RETURN"))
     private static void syrupCore$readFavorite(CompoundTag tag, CallbackInfoReturnable<ServerData> cir) {
-        ((FavoriteServerData)cir.getReturnValue()).setFavorite(tag.getBoolean("SyrupCoreFavorite"));
+        ((FavoriteServerData)cir.getReturnValue()).setFavorite(LegacyFavoriteImporter.importServerFavorite(tag, cir.getReturnValue()));
     }
 
     @Inject(method = "copyFrom", at = @At("RETURN"))

@@ -11,10 +11,14 @@ import java.util.Map;
 import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
 import net.syrupstudios.syrupcore.SyrupCore;
 
 public final class ServerPlayTime {
     private static final Path FILE = Minecraft.getInstance().gameDirectory.toPath().resolve("config/syrup-core-server-playtime.json");
+    private static final Path LEGACY_FILE = Minecraft.getInstance().gameDirectory.toPath().resolve("data/servers_playtime.dat");
+    private static final Path MIGRATION_MARKER = FILE.resolveSibling("syrup-core-server-playtime-migrated");
     private static final Map<String, Long> TIMES = load();
     private static String activeAddress;
     private static long activeTicks;
@@ -55,27 +59,46 @@ public final class ServerPlayTime {
 
     private static Map<String, Long> load() {
         Map<String, Long> times = new HashMap<>();
-        if (!Files.isRegularFile(FILE)) return times;
-        try (var reader = Files.newBufferedReader(FILE)) {
-            JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
-            root.entrySet().forEach(entry -> {
-                try {
-                    long value = entry.getValue().getAsLong();
-                    if (value >= 0) times.put(entry.getKey(), value);
-                } catch (RuntimeException ignored) {
-                }
-            });
-        } catch (IOException | RuntimeException exception) {
-            SyrupCore.LOGGER.error("Could not read server play time", exception);
+        boolean nativeDataValid = true;
+        if (Files.isRegularFile(FILE)) {
+            try (var reader = Files.newBufferedReader(FILE)) {
+                JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
+                root.entrySet().forEach(entry -> {
+                    try {
+                        long value = entry.getValue().getAsLong();
+                        if (value >= 0) times.put(entry.getKey(), value);
+                    } catch (RuntimeException ignored) {
+                    }
+                });
+            } catch (IOException | RuntimeException exception) {
+                nativeDataValid = false;
+                SyrupCore.LOGGER.error("Could not read server play time", exception);
+            }
         }
+        migrateLegacy(times, nativeDataValid);
         return times;
     }
 
-    private static void saveActive() {
-        if (activeAddress == null || activeTicks == 0) return;
+    private static void migrateLegacy(Map<String, Long> times, boolean nativeDataValid) {
+        if (!nativeDataValid || Files.exists(MIGRATION_MARKER) || !Files.isRegularFile(LEGACY_FILE)) return;
+        try {
+            CompoundTag legacy = NbtIo.read(LEGACY_FILE);
+            if (legacy == null) return;
+            for (String address : legacy.getAllKeys()) {
+                int ticks = legacy.getInt(address);
+                if (ticks > 0) times.merge(address, (long) ticks, Math::max);
+            }
+            if (!saveTimes(times)) return;
+            Files.writeString(MIGRATION_MARKER, "Imported WorldPlayTime server play time.");
+        } catch (IOException | RuntimeException exception) {
+            SyrupCore.LOGGER.error("Could not import WorldPlayTime server play time", exception);
+        }
+    }
+
+    private static boolean saveTimes(Map<String, Long> times) {
         Path temporary = FILE.resolveSibling(FILE.getFileName() + ".tmp");
         JsonObject root = new JsonObject();
-        TIMES.forEach(root::addProperty);
+        times.forEach(root::addProperty);
         try {
             Files.createDirectories(FILE.getParent());
             Files.writeString(temporary, root.toString());
@@ -84,9 +107,15 @@ public final class ServerPlayTime {
             } catch (java.nio.file.AtomicMoveNotSupportedException exception) {
                 Files.move(temporary, FILE, StandardCopyOption.REPLACE_EXISTING);
             }
-            activeTicks = 0;
+            return true;
         } catch (IOException exception) {
             SyrupCore.LOGGER.error("Could not save server play time", exception);
+            return false;
         }
+    }
+
+    private static void saveActive() {
+        if (activeAddress == null || activeTicks == 0) return;
+        if (saveTimes(TIMES)) activeTicks = 0;
     }
 }
